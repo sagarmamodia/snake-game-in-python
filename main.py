@@ -9,15 +9,12 @@ class Game:
     def __init__(self):
         pg.init()
         self.display = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.snake = Snake(self)
 
     def draw_grid(self):
-        #vertical lines
-        for i in range(1, int(SCREEN_WIDTH/BLOCK_SIZE)):
-            pg.draw.line(self.display, GREY, (i * BLOCK_SIZE, 0), (i*BLOCK_SIZE, SCREEN_HEIGHT))
-        #Horizontal lines
-        for i in range(1, int(SCREEN_HEIGHT/BLOCK_SIZE)):
-            pg.draw.line(self.display, GREY, (0, i * BLOCK_SIZE), (SCREEN_WIDTH, i * BLOCK_SIZE))
-      
+        [pg.draw.line(self.display, GREY, (0, i), (SCREEN_WIDTH, i)) for i in range(0, SCREEN_WIDTH, TILE_SIZE)] 
+        [pg.draw.line(self.display, GREY, (i, 0), (i, SCREEN_HEIGHT)) for i in range(0, SCREEN_HEIGHT, TILE_SIZE)]
+    
     def run(self):  
         while True:
             self.display.fill(BLACK)
@@ -31,6 +28,9 @@ class Game:
     
     def update(self):
         self.check_events()
+        self.snake.update()
+
+
         self.draw_grid()
 
 
