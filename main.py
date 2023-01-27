@@ -25,12 +25,15 @@ class Game:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 exit()
+            if event.type == pg.KEYDOWN:
+                self.snake.control(event)
     
+    def new_game(self):
+        self.snake = Snake(self)
+
     def update(self):
         self.check_events()
         self.snake.update()
-
-
         self.draw_grid()
 
 
