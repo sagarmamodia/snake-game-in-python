@@ -14,6 +14,7 @@ class Snake():
         self.time = 0
         self.delay_step = 150 #milliseconds
         self.food = Food(self)
+        self.directions = {'up': 1, 'down': 1, 'right': 1, 'left': 0}
 
     def get_random_pos(self):
         return randrange(TILE_SIZE//2, SCREEN_WIDTH, TILE_SIZE), randrange(TILE_SIZE//2, SCREEN_HEIGHT, TILE_SIZE)
@@ -25,14 +26,18 @@ class Snake():
             self.food = Food(self)
 
     def control(self, event):
-        if event.key == pg.K_w:
+        if event.key == pg.K_w and self.directions['up']:
             self.direction = vec2(0, -TILE_SIZE)
-        elif event.key == pg.K_s:
+            self.directions = {'up': 1, 'down': 0, 'right': 1, 'left': 1}
+        elif event.key == pg.K_s and self.directions['down']:
             self.direction = vec2(0, TILE_SIZE)
-        elif event.key == pg.K_d:
+            self.directions = {'up': 0, 'down': 1, 'right': 1, 'left': 1}
+        elif event.key == pg.K_d and self.directions['right']:
             self.direction = vec2(TILE_SIZE, 0)
+            self.directions = {'up': 1, 'down': 1, 'right': 1, 'left': 0}
         elif event.key == pg.K_a:
             self.direction = vec2(-TILE_SIZE, 0)
+            self.directions = {'up': 1, 'down': 1, 'right': 0, 'left': 1}
 
     def delta_time(self):
         current_time = pg.time.get_ticks()
@@ -41,6 +46,10 @@ class Snake():
             self.time = current_time
             return True
         return False
+
+    def check_self_eating(self):
+        if len(set([segment.center for segment in self.segments])) != len(self.segments):
+            self.game.new_game()
 
     def check_borders(self):
         if self.rect.center[0] < 0 or self.rect.center[0] > SCREEN_WIDTH or self.rect.center[1] < 0 or self.rect.center[1] > SCREEN_HEIGHT:
@@ -59,6 +68,7 @@ class Snake():
     def update(self):
         self.check_food()
         self.check_borders()
+        self.check_self_eating()
         self.move()
         self.draw()
 
